@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
-import pandas as pd
+#import pandas as pd
 import csv
 #import requests
 
@@ -45,9 +45,9 @@ import csv
 
 # # print(city_row)
 
-def search_mayors_selenium (file_city, file_state):
+def search_selenium (file_city, file_state):
 	#takes city, state parameters
-	# returns pagesource
+	#returns pagesource
 	driver = webdriver.Chrome()
 	driver.implicitly_wait(10)
 	driver.get('https://www.usmayors.org/mayors/')
@@ -86,6 +86,8 @@ def search_mayors_selenium (file_city, file_state):
 	return response.text
 
 
+def parse_mayors_data ():
+
 
 
 # MAIN
@@ -118,65 +120,64 @@ with open('mayors.csv') as csvfile:
 	#rawhtml = search_mayors_db(donerows[2][0], donerows[2][1])
 	#rawhtml = search_mayors_selenium("New York", "NY") #test row
 
-	rawhtml = search_mayors_selenium("New York", "NY") #test row
+	#MASTER VARIABLES
+	searchcity = "New York"
+	searchstate = "NY"
 
-
+	#Call selenium based lookup function and capture the HTML
+	rawhtml = search_selenium(searchcity, searchstate)
 	doc = BeautifulSoup(rawhtml, "html.parser")
-	# print(doc)
 
 	#strip away anything besides results
-	searchresults = doc.find('div', class_='post-content').find_all('ul', limit=3) #FOR SELENIUM TODO REMOVE LIMIT
-	#searchresults = doc.find('div', class_='post-content').find_all('ul', limit=3) #FOR REQUESTS #NOT ABLE TO CAPTURE RESULTS IN RESPONSE
-
-	# print(searchresults)
+	searchresults = doc.find('div', class_='post-content').find_all('ul') #FOR SELENIUM TODO REMOVE LIMIT
+	#searchresults = doc.find('div', class_='post-content').find_all('ul') #FOR REQUESTS #NOT ABLE TO CAPTURE RESULTS IN RESPONSE - NEED BETTER HEADERS?
 	
-	mayordetails = []
+	mayorcontactlist = []
 
 	for searchresult in searchresults:
-		# print('searchresult:')
-		# print(searchresult)
-		# mayorhtml = searchresult.find('ul')
-		# print('mayorhtml:')
-		# print(mayorhtml)
-		# print('end mayorhtml')
-		# print (searchresult.text)
-		img = searchresult.find('img')
-		print(img['src'])
+		mayorentry = []
 
+		#make navigable mayor details section
 		result = list(searchresult)
-		print("results lis")
-		print(result)
-		print (result[3]) #name
 		
-		#STARTHERE
-		name = result[3]
-		namearray = name.split()
-		fname = namearray[0]
-		lname = namerray[-1]
-		print(fname)
-		print(lname)
-
-		print (result[5]) #city, state
-		print (result[7]) #population
-		print (result[11]) #next election date
-		print (result[13]) #bio
-		print (result[16]) #phone
-		print (result[19]) #email
-
-		contactlinks = searchresult.find_all('a')
-
-		for contactlink in contactlinks:
-			if(contactlink.string != "Bio"):
-				print(contactlink.string)
-			else:
-				print(contactlink['href'])
-
-		#make mayor object with attributes
-		mayordetails.append([result])
+		#Extract details of mayor
+		citystate = result[5].split(', ')
+		city = citystate[0]
+		state = citystate[-1]
 
 		
+		
+		#if the city result does not match with the search query, iterate to the next city
+		if ( searchcity == city and searchstate == state):
+			name = result[3].get_text()
+			namearray = list(name.split())
+			fname = namearray[0] #get firstname by position
+			lname = namearray[-1] #get lastname by position
+			phone = result[16].string #phone
+			email = result[19].string #email
+
+			#make mayor object with attributes
+			mayordetails = [fname, lname, email, phone]
+			#print(mayordetails)
+			
+			mayorcontactlist.append(mayordetails)
+
+			# Other variables available
+			# print (result[5]) #city, state
+			# print (result[7]) #population
+			# print (result[11]) #next election date
+			# print (result[13]) #bio
+		else:
+			continue
+
 	
-	# print(mayordetails)
+	print(mayorcontactlist)
+
+def main():
+    print("Hello World!")
+
+if __name__ == "__main__":
+    main()
 
 
 

@@ -124,5 +124,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-#datafiles
+# Project data files
 *.csv
