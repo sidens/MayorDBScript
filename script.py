@@ -5,45 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
-#import pandas as pd
-import csv
-#import requests
 
-
-# CSV Read
-# save all in dict
-# query through dict
-# Write dict out
-
-# State
-# City
-# Population
-# First Name
-# Last Name
-# Email
-# Web Form
-# Phone
-# Fax
-# Address 1
-# Zip Code 
-# Term End
-
-# Read CSV with Pandas - INCOMPLETE
-# df = pd.read_csv('mayors.csv', index_col=1)
-# ##df = pd.read_csv('mayorstrans.csv')
-
-# print(df)
-# df.set_index('City', inplace = True)
-# # print(df.dtypes)
-
-# # city_row = df[df['City'] == "Tacoma"]
-# # print(city_row)
-
-# print(df.loc['Tacoma'])
-
-# # df.at[2,'Zip Code'] = 55555
-
-# # print(city_row)
 
 def search_selenium (searchcity, searchstate):
 	#takes city, state parameters
@@ -68,22 +30,22 @@ def search_selenium (searchcity, searchstate):
 		driver.close()
 
 #def search_mayors_post (searchcity, searchstate): #unable to get working due to incomplete response - likely due to invalid/incomplete headers?
-	url = 'https://www.usmayors.org/mayors/'
-	session = requests.session()
-	payload = 	{'searchTerm': searchcity,
-					'submit': 'search'}	
-	headers = {
-				# 'authority': 'www.usmayors.org',
-				# 'accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-				# 'origin':'https://www.usmayors.org',
-				# 'referer':'https://www.usmayors.org/mayors/meet-the-mayors',
-				# 'upgrade-insecure-requests': '1',
-				# 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'
-			  }
+	# url = 'https://www.usmayors.org/mayors/'
+	# session = requests.session()
+	# payload = 	{'searchTerm': searchcity,
+	# 				'submit': 'search'}	
+	# headers = {
+	# 			# 'authority': 'www.usmayors.org',
+	# 			# 'accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+	# 			# 'origin':'https://www.usmayors.org',
+	# 			# 'referer':'https://www.usmayors.org/mayors/meet-the-mayors',
+	# 			# 'upgrade-insecure-requests': '1',
+	# 			# 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'
+	# 		  }
 
-	response = requests.post(url, data=payload, headers = headers)
-	# print (response.text)
-	return response.text
+	# response = requests.post(url, data=payload, headers = headers)
+	# # print (response.text)
+	# return response.text
 
 
 def parse_mayors_data (searchcity, searchstate):
