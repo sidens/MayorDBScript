@@ -137,8 +137,8 @@ def parse_mayors_data (searchcity, searchstate):
 
 def main():
     #MASTER VARIABLES
-	searchcity = "Hastings-on-Hudson"
-	searchstate = "NY"
+	searchcity = "Seattle"
+	searchstate = "WA"
 
 	mayor = parse_mayors_data(searchcity,searchstate)
 	print(mayor)
