@@ -45,7 +45,7 @@ import csv
 
 # # print(city_row)
 
-def search_selenium (file_city, file_state):
+def search_selenium (searchcity, searchstate):
 	#takes city, state parameters
 	#returns pagesource
 	driver = webdriver.Chrome()
@@ -55,7 +55,7 @@ def search_selenium (file_city, file_state):
 	search_input = '//*[@id="searchform"]/input[1]'
 	search_submit = '//*[@id="searchform"]/input[2]'
 
-	driver.find_element_by_xpath(search_input).send_keys(file_city)
+	driver.find_element_by_xpath(search_input).send_keys(searchcity)
 	driver.find_element_by_xpath(search_submit).click()
 
 	try:
@@ -67,10 +67,10 @@ def search_selenium (file_city, file_state):
 	finally:
 		driver.close()
 
-#def search_mayors_post (file_city, file_state): #unable to get working due to incomplete response - likely due to invalid/incomplete headers?
+#def search_mayors_post (searchcity, searchstate): #unable to get working due to incomplete response - likely due to invalid/incomplete headers?
 	url = 'https://www.usmayors.org/mayors/'
 	session = requests.session()
-	payload = 	{'searchTerm': file_city,
+	payload = 	{'searchTerm': searchcity,
 					'submit': 'search'}	
 	headers = {
 				# 'authority': 'www.usmayors.org',
@@ -86,43 +86,7 @@ def search_selenium (file_city, file_state):
 	return response.text
 
 
-def parse_mayors_data ():
-
-
-
-# MAIN
-# Read CSV with csv library
-donerows = []
-
-with open('mayors.csv') as csvfile:
-	
-	# readCSV = csv.reader(csvfile, delimiter=',')
-	# next(readCSV) #skip header
-	
-	# city = ""
-	# state = ""
-
-	# for row in readCSV:
-	# 	filledrow = []
-	# 	city = row[1]
-	# 	state = row[0]
-	# 	# print(city + ', ' + state)
-	# 	# filledrow.append()
-	# 	donerows.append([city, state])
-	# 	# print(filledrow)
-	# 	# print (len(donerows))
-
-
-
-	# print(donerows[2])
-	# print(donerows[2][0] +" ,"+ donerows[2][1])
-
-	#rawhtml = search_mayors_db(donerows[2][0], donerows[2][1])
-	#rawhtml = search_mayors_selenium("New York", "NY") #test row
-
-	#MASTER VARIABLES
-	searchcity = "New York"
-	searchstate = "NY"
+def parse_mayors_data (searchcity, searchstate):
 
 	#Call selenium based lookup function and capture the HTML
 	rawhtml = search_selenium(searchcity, searchstate)
@@ -130,7 +94,7 @@ with open('mayors.csv') as csvfile:
 
 	#strip away anything besides results
 	searchresults = doc.find('div', class_='post-content').find_all('ul') #FOR SELENIUM TODO REMOVE LIMIT
-	#searchresults = doc.find('div', class_='post-content').find_all('ul') #FOR REQUESTS #NOT ABLE TO CAPTURE RESULTS IN RESPONSE - NEED BETTER HEADERS?
+	#searchresults = doc.find('div', class_='post-content').find_all('ul') #FOR DIRECT POST REQUESTS #NOT ABLE TO CAPTURE RESULTS IN RESPONSE - NEED BETTER HEADERS?
 	
 	mayorcontactlist = []
 
@@ -139,15 +103,14 @@ with open('mayors.csv') as csvfile:
 
 		#make navigable mayor details section
 		result = list(searchresult)
-		
+
 		#Extract details of mayor
 		citystate = result[5].split(', ')
 		city = citystate[0]
 		state = citystate[-1]
 
 		
-		
-		#if the city result does not match with the search query, iterate to the next city
+		#if the city/state result is an exact match with the search query, capture details and return them
 		if ( searchcity == city and searchstate == state):
 			name = result[3].get_text()
 			namearray = list(name.split())
@@ -160,8 +123,6 @@ with open('mayors.csv') as csvfile:
 			mayordetails = [fname, lname, email, phone]
 			#print(mayordetails)
 			
-			mayorcontactlist.append(mayordetails)
-
 			# Other variables available
 			# print (result[5]) #city, state
 			# print (result[7]) #population
@@ -170,11 +131,17 @@ with open('mayors.csv') as csvfile:
 		else:
 			continue
 
+	return mayordetails
+
 	
-	print(mayorcontactlist)
 
 def main():
-    print("Hello World!")
+    #MASTER VARIABLES
+	searchcity = "Hastings-on-Hudson"
+	searchstate = "NY"
+
+	mayor = parse_mayors_data(searchcity,searchstate)
+	print(mayor)
 
 if __name__ == "__main__":
     main()
