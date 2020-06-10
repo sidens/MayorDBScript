@@ -2,8 +2,6 @@ from bs4 import BeautifulSoup
 import requests
 import sys
 
-
-
 def search_post (searchcity, searchstate): #unable to get working due to incomplete response - likely due to invalid/incomplete headers?
 	url = 'https://www.usmayors.org/mayors/meet-the-mayors'
 	session = requests.session()
