@@ -82,7 +82,7 @@ def parse_mayors_data (searchcity, searchstate):
 			email = result[19].string #email
 
 			#make mayor object with attributes
-			mayordetails = [fname, lname, email, phone]
+			mayordetails = [city, state, fname, lname, email, phone]
 			#print(mayordetails)
 			
 			# Other variables available
